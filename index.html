@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko" data-theme="dark" data-user="ruby747" data-repo="ruby747.github.io">
+<html lang="ko" data-theme="light" data-user="ruby747" data-repo="ruby747.github.io">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -83,7 +83,6 @@
     .cmdk-list{max-height:50vh; overflow:auto}
     .cmdk-item{padding:12px 14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
     .cmdk-item strong{font-weight:600}
-    .cmdk-item kbd{font:12px ui-monospace,monospace; color:var(--muted)}
 
     /* ========= Utilities ========= */
     .hint{font-size:12px; color:var(--muted)}
@@ -122,10 +121,10 @@
           </div>
         </div>
         <div class="toolbar">
-          <button id="themeBtn" class="btn" title="테마 전환 (T)">🌓 테마</button>
+          <button id="themeBtn" class="btn" title="테마 전환">🌓 테마</button>
           <button id="copyBtn" class="btn" title="이메일 복사">📋 메일</button>
           <a class="btn" href="https://github.com/ruby747" target="_blank" rel="noreferrer" title="GitHub">🐙 GitHub</a>
-          <button id="cmdBtn" class="btn primary" title="명령 팔레트 (Ctrl/⌘+K or /)">⌨️ Command</button>
+          <button id="cmdBtn" class="btn primary" title="명령 팔레트">⌨️ Command</button>
         </div>
       </header>
 
@@ -137,7 +136,6 @@
           <p>심플하고 담백한 개인 홈. 프로젝트와 기록을 가볍게 모았습니다.</p>
 
           <div class="badges">
-            <span class="badge">⌨️ <span class="kbd">Ctrl/⌘+K</span> 팔레트 · <span class="kbd">T</span> 테마</span>
             <span class="badge">Visits (local): <strong id="visits">0</strong></span>
             <span class="badge">⚡ GitHub Pages · Cloudflare</span>
           </div>
@@ -165,8 +163,8 @@
                 <h3>Suika Clone</h3>
                 <p class="hint">브라우저 수박게임</p>
               </a>
-              <a class="tile" href="/notes" data-tags="note" target="_blank" rel="noreferrer">
-                <h3>Notes</h3>
+              <a class="tile" href="https://pr1-app.ruby747.com/" data-tags="note" target="_blank" rel="noreferrer">
+                <h3>Bookmarks</h3>
                 <p class="hint">스트리밍/메모 정리</p>
               </a>
               <a class="tile" href="#repos" data-tags="web">
@@ -179,7 +177,6 @@
           <!-- Gallery -->
           <section class="section" id="gallery">
             <h2>Gallery</h2>
-            <p class="hint">/assets 폴더 이미지를 자동으로 읽어옵니다. (jpg/png/webp/svg)</p>
             <div class="gallery" id="galleryGrid" aria-live="polite"></div>
           </section>
 
@@ -187,10 +184,10 @@
           <section class="section" id="links">
             <h2>Links</h2>
             <div class="links">
-              <a href="mailto:hi@ruby747.com">메일</a>
-              <a href="https://x.com/" target="_blank" rel="noreferrer">X</a>
-              <a href="https://twitch.tv/" target="_blank" rel="noreferrer">Twitch</a>
-              <a href="https://youtube.com/" target="_blank" rel="noreferrer">YouTube</a>
+              <a href="mailto:jun2002usa@gmail.com">메일</a>
+              <a href="https://x.com/ellem1218" target="_blank" rel="noreferrer">X</a>
+              <a href="https://twitch.tv/ecoffee" target="_blank" rel="noreferrer">Twitch</a>
+              <a href="https://www.youtube.com/@%EC%BB%A4%ED%94%BC%EC%BD%A9" target="_blank" rel="noreferrer">YouTube</a>
               <button class="btn" data-copy="#links">🔗 섹션링크 복사</button>
             </div>
           </section>
@@ -253,10 +250,9 @@
   function toggleTheme(){ setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'); }
   const saved=(()=>{try{return localStorage.getItem('theme')}catch{return null}})(); if(saved) setTheme(saved);
   $('#themeBtn').addEventListener('click', toggleTheme);
-  document.addEventListener('keydown', e=>{ if(e.key==='t' || e.key==='T') toggleTheme(); });
 
   /* ========= Email copy ========= */
-  const EMAIL='hi@ruby747.com';
+  const EMAIL='jun2002usa@gmail.com';
   $('#copyBtn').addEventListener('click', async ()=>{
     try{ await navigator.clipboard.writeText(EMAIL); alert('복사됨: '+EMAIL); }
     catch{ prompt('복사 실패. 직접 복사하세요 ↓', EMAIL); }
@@ -383,30 +379,26 @@
   /* ========= Command palette ========= */
   const cmd = $('#cmdk'), cmdInput = $('#cmdInput'), cmdList = $('#cmdList');
   const CMDS = [
-    {label:'Go: Top', action:()=>window.scrollTo({top:0,behavior:'smooth'}), k:'G T'},
-    {label:'Go: Projects', action:()=>location.hash='#projects', k:'G P'},
-    {label:'Go: Gallery', action:()=>location.hash='#gallery', k:'G G'},
-    {label:'Go: Repos', action:()=>location.hash='#repos', k:'G R'},
-    {label:'Theme: Toggle', action:toggleTheme, k:'T'},
-    {label:'Copy: Email', action:async()=>{try{await navigator.clipboard.writeText(EMAIL);}catch{}}, k:'C E'},
-    {label:'Open: GitHub profile', action:()=>window.open('https://github.com/'+document.documentElement.dataset.user,'_blank'), k:'O G'},
+    {label:'Go: Top', action:()=>window.scrollTo({top:0,behavior:'smooth'})},
+    {label:'Go: Projects', action:()=>location.hash='#projects'},
+    {label:'Go: Gallery', action:()=>location.hash='#gallery'},
+    {label:'Go: Repos', action:()=>location.hash='#repos'},
+    {label:'Theme: Toggle', action:toggleTheme},
+    {label:'Copy: Email', action:async()=>{try{await navigator.clipboard.writeText(EMAIL);}catch{}}},
+    {label:'Open: GitHub profile', action:()=>window.open('https://github.com/'+document.documentElement.dataset.user,'_blank')},
   ];
   function openCmd(){ cmd.setAttribute('aria-hidden','false'); cmdInput.value=''; renderCmd(''); cmdInput.focus(); }
   function closeCmd(){ cmd.setAttribute('aria-hidden','true'); }
   function renderCmd(q){
     const query = q.toLowerCase();
     const items = CMDS.filter(c=>c.label.toLowerCase().includes(query));
-    cmdList.innerHTML = items.map(it=>`<div class="cmdk-item" role="option"><strong>${it.label}</strong><kbd>${it.k}</kbd></div>`).join('');
+    cmdList.innerHTML = items.map(it=>`<div class="cmdk-item" role="option"><strong>${it.label}</strong></div>`).join('');
     $$('.cmdk-item', cmdList).forEach((el,i)=>{ el.addEventListener('click', ()=>{ items[i].action(); closeCmd(); }); });
   }
   $('#cmdBtn').onclick=openCmd;
   cmd.addEventListener('click', e=>{ if(e.target===cmd) closeCmd(); });
   cmdInput.addEventListener('input', ()=>renderCmd(cmdInput.value));
   document.addEventListener('keydown', e=>{
-    const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
-    if((isMac && e.metaKey && e.key.toLowerCase()==='k') || (!isMac && e.ctrlKey && e.key.toLowerCase()==='k') || e.key==='/'){
-      e.preventDefault(); (cmd.getAttribute('aria-hidden')==='true') ? openCmd() : closeCmd();
-    }
     if(e.key==='Escape' && cmd.getAttribute('aria-hidden')==='false') closeCmd();
   });
 
