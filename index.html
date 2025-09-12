@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ko" data-theme="dark" data-user="ruby747" data-repo="ruby747.github.io">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ruby747 — Home</title>
+  <meta name="description" content="심플하고 담백한 개인 홈. 프로젝트와 기록을 가볍게 모았습니다." />
+  <meta property="og:title" content="ruby747 — Home" />
+  <meta property="og:description" content="심플하고 담백한 개인 홈" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/assets/og.jpg" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>💎</text></svg>">
+  <style>
+    /* ========= Base Theme & Reset ========= */
+    :root{
+      --bg:#0b0d12; --card:#10131b; --soft:#171b26; --text:#e6e8ef; --muted:#9aa0ad; --line:#252a36; --accent:#7c3aed;
+      --radius:18px; --shadow:0 10px 28px rgba(0,0,0,.33); --max:1160px;
+      --speed:150ms; --ease:cubic-bezier(.2,.8,.2,1);
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f6f7fb; --card:#ffffff; --soft:#eef1f8; --text:#0f1218; --muted:#596173; --line:#e6e8ef; --accent:#6d28d9; }
+    }
+    [data-theme="light"]{
+      --bg:#f6f7fb; --card:#ffffff; --soft:#eef1f8; --text:#0f1218; --muted:#596173; --line:#e6e8ef; --accent:#6d28d9;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:ui-sans-serif,system-ui,-apple-system,"Apple SD Gothic Neo",Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--text); background:radial-gradient(1200px 600px at 20% 10%, #13182a 0%, var(--bg) 60%) fixed;
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+    .wrap{min-height:100%; display:flex; align-items:center; justify-content:center; padding:24px}
+    .shell{width:100%; max-width:var(--max)}
+
+    /* ========= Progress Bar ========= */
+    .progress{position:fixed; inset:0 0 auto 0; height:3px; background:linear-gradient(90deg,var(--accent),#06b6d4); transform:scaleX(0); transform-origin:0 0; z-index:9999}
+
+    /* ========= Header ========= */
+    header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 14px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .dot{width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 30px var(--accent)}
+    .title{font-weight:800; letter-spacing:-.02em; font-size:26px}
+    .mini{color:var(--muted); font-size:13px}
+    .toolbar{display:flex; gap:8px; flex-wrap:wrap}
+    .btn{padding:9px 12px; border-radius:12px; border:1px solid var(--line); background:var(--soft); color:var(--text); cursor:pointer; transition:filter var(--speed) var(--ease)}
+    .btn:hover{filter:brightness(1.05)}
+    .btn.primary{border:none; background:linear-gradient(135deg,#5b21b6,#7c3aed,#06b6d4); color:white}
+
+    /* ========= Layout ========= */
+    .grid{display:grid; gap:16px; grid-template-columns:1fr}
+    @media(min-width:960px){ .grid{grid-template-columns:1.12fr .88fr} }
+    .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px}
+    .section{margin-top:16px}
+    h1,h2,h3{margin:0}
+    h1{font-size:38px; letter-spacing:-.02em}
+    p{margin:8px 0 0; color:var(--muted); line-height:1.7}
+
+    /* ========= Lists & Tiles ========= */
+    .badges{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .badge{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); background:var(--soft); padding:8px 10px; border-radius:999px; font-size:12px; color:var(--muted)}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; background:var(--soft); border:1px solid var(--line); padding:2px 6px; border-radius:6px; font-size:12px}
+    .tiles{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-top:10px}
+    .tile{padding:16px; background:linear-gradient(180deg, var(--soft), transparent 120%); border:1px solid var(--line); border-radius:16px; transition:transform var(--speed) var(--ease)}
+    .tile:hover{transform:translateY(-2px)}
+
+    /* ========= Repo list ========= */
+    .row{display:grid; gap:12px}
+    .repo .meta{display:flex; gap:10px; color:var(--muted); font-size:12px}
+
+    /* ========= Gallery ========= */
+    .gallery{display:grid; gap:8px; grid-template-columns:repeat(3,1fr)}
+    .gallery a{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--soft)}
+    .gallery img{width:100%; height:110px; object-fit:cover}
+
+    /* ========= Command Palette ========= */
+    .cmdk{position:fixed; inset:0; display:none; align-items:flex-start; justify-content:center; background:rgba(0,0,0,.45); z-index:10000}
+    .cmdk[aria-hidden="false"]{display:flex}
+    .cmdk-panel{margin-top:12vh; width:min(720px,92vw); border-radius:16px; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow)}
+    .cmdk-head{padding:12px; border-bottom:1px solid var(--line)}
+    .cmdk-head input{width:100%; background:var(--soft); color:var(--text); border:1px solid var(--line); border-radius:10px; padding:12px 12px}
+    .cmdk-list{max-height:50vh; overflow:auto}
+    .cmdk-item{padding:12px 14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
+    .cmdk-item strong{font-weight:600}
+    .cmdk-item kbd{font:12px ui-monospace,monospace; color:var(--muted)}
+
+    /* ========= Utilities ========= */
+    .hint{font-size:12px; color:var(--muted)}
+    .links{display:flex; flex-wrap:wrap; gap:8px}
+    .links a{padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:var(--soft)}
+    .footer{margin-top:16px; font-size:13px; color:var(--muted); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+
+    /* ========= Lightbox ========= */
+    .lightbox{position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; place-items:center; z-index:10001}
+    .lightbox[aria-hidden="false"]{display:grid}
+    .lightbox img{max-width:92vw; max-height:84vh; border-radius:12px; border:1px solid var(--line)}
+    .lightbox .nav{position:fixed; inset:auto 0 24px 0; display:flex; justify-content:center; gap:10px}
+    .lightbox .nav .btn{background:#111827; border-color:#1f2937}
+
+    /* ========= Reduced motion ========= */
+    @media (prefers-reduced-motion: reduce){
+      .tile:hover{transform:none}
+      .progress{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <!-- 상단 스크롤 진행바 -->
+  <div class="progress" id="progress"></div>
+
+  <div class="wrap">
+    <div class="shell">
+
+      <!-- Header -->
+      <header>
+        <div class="brand">
+          <div class="dot" aria-hidden="true"></div>
+          <div>
+            <div class="title">ruby747.com</div>
+            <div class="mini">Seoul · <span id="clock" aria-live="polite">--:--:--</span></div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button id="themeBtn" class="btn" title="테마 전환 (T)">🌓 테마</button>
+          <button id="copyBtn" class="btn" title="이메일 복사">📋 메일</button>
+          <a class="btn" href="https://github.com/ruby747" target="_blank" rel="noreferrer" title="GitHub">🐙 GitHub</a>
+          <button id="cmdBtn" class="btn primary" title="명령 팔레트 (Ctrl/⌘+K or /)">⌨️ Command</button>
+        </div>
+      </header>
+
+      <!-- Main grid -->
+      <div class="grid">
+        <!-- Left -->
+        <main class="card" id="top">
+          <h1>ruby747 base</h1>
+          <p>심플하고 담백한 개인 홈. 프로젝트와 기록을 가볍게 모았습니다.</p>
+
+          <div class="badges">
+            <span class="badge">⌨️ <span class="kbd">Ctrl/⌘+K</span> 팔레트 · <span class="kbd">T</span> 테마</span>
+            <span class="badge">Visits (local): <strong id="visits">0</strong></span>
+            <span class="badge">⚡ GitHub Pages · Cloudflare</span>
+          </div>
+
+          <!-- Projects -->
+          <section class="section" id="projects">
+            <h2>Projects</h2>
+
+            <!-- 필터 -->
+            <div class="badges">
+              <span class="badge">Filter:</span>
+              <button class="btn" data-tag="all">All</button>
+              <button class="btn" data-tag="web">Web</button>
+              <button class="btn" data-tag="game">Game</button>
+              <button class="btn" data-tag="note">Note</button>
+              <input id="projSearch" class="btn" placeholder="검색…" style="flex:1; min-width:160px" />
+            </div>
+
+            <div class="tiles" id="projGrid">
+              <a class="tile" href="/news" data-tags="web" target="_blank" rel="noreferrer">
+                <h3>News Cards</h3>
+                <p class="hint">RSS → 이미지 카드 변환 데모</p>
+              </a>
+              <a class="tile" href="/suika" data-tags="game" target="_blank" rel="noreferrer">
+                <h3>Suika Clone</h3>
+                <p class="hint">브라우저 수박게임</p>
+              </a>
+              <a class="tile" href="/notes" data-tags="note" target="_blank" rel="noreferrer">
+                <h3>Notes</h3>
+                <p class="hint">스트리밍/메모 정리</p>
+              </a>
+              <a class="tile" href="#repos" data-tags="web">
+                <h3>Latest GitHub</h3>
+                <p class="hint">최근 업데이트 레포 자동 로드</p>
+              </a>
+            </div>
+          </section>
+
+          <!-- Gallery -->
+          <section class="section" id="gallery">
+            <h2>Gallery</h2>
+            <p class="hint">/assets 폴더 이미지를 자동으로 읽어옵니다. (jpg/png/webp/svg)</p>
+            <div class="gallery" id="galleryGrid" aria-live="polite"></div>
+          </section>
+
+          <!-- Links -->
+          <section class="section" id="links">
+            <h2>Links</h2>
+            <div class="links">
+              <a href="mailto:hi@ruby747.com">메일</a>
+              <a href="https://x.com/" target="_blank" rel="noreferrer">X</a>
+              <a href="https://twitch.tv/" target="_blank" rel="noreferrer">Twitch</a>
+              <a href="https://youtube.com/" target="_blank" rel="noreferrer">YouTube</a>
+              <button class="btn" data-copy="#links">🔗 섹션링크 복사</button>
+            </div>
+          </section>
+
+          <div class="footer">
+            <div>© <span id="year"></span> ruby747 — GitHub Pages</div>
+            <div class="hint">Cloudflare Proxy (권장: HTTPS, Full/Strict)</div>
+          </div>
+        </main>
+
+        <!-- Right -->
+        <aside class="card" id="repos">
+          <h2 style="margin-bottom:8px">Latest GitHub</h2>
+          <p class="hint">공개 레포 6개를 최신 업데이트 순으로 표시</p>
+          <div id="repoList" class="row"></div>
+          <div class="badges" style="margin-top:10px">
+            <button class="btn" data-copy="#repos">🔗 섹션링크 복사</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- Command palette -->
+  <div class="cmdk" id="cmdk" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="cmdk-panel" role="listbox" aria-label="Command palette">
+      <div class="cmdk-head"><input id="cmdInput" placeholder="명령 또는 검색어 입력… (닫기: Esc)" autocomplete="off" /></div>
+      <div class="cmdk-list" id="cmdList"></div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <img id="lightImg" alt="">
+    <div class="nav">
+      <button class="btn" id="prevImg">◀︎ Prev</button>
+      <button class="btn" id="nextImg">Next ▶︎</button>
+      <button class="btn" id="closeImg">✕ Close</button>
+    </div>
+  </div>
+
+  <noscript>자바스크립트를 켜면 시계/레포/갤러리/팔레트 기능이 활성화됩니다.</noscript>
+
+  <script>
+  /* ========= Utilities ========= */
+  const $ = (s, r=document)=>r.querySelector(s);
+  const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
+
+  /* ========= Clock & Year ========= */
+  function tick(){ $('#clock').textContent = new Date().toLocaleTimeString('ko-KR',{hour12:false,timeZone:'Asia/Seoul'}); }
+  tick(); setInterval(tick,1000);
+  $('#year').textContent = new Date().getFullYear();
+
+  /* ========= Local visits ========= */
+  try{ const k='ruby747_visits'; const n=(+localStorage.getItem(k)||0)+1; localStorage.setItem(k,n); $('#visits').textContent=n; }catch{ }
+
+  /* ========= Theme ========= */
+  const root=document.documentElement;
+  function setTheme(mode){ root.setAttribute('data-theme', mode); try{localStorage.setItem('theme',mode);}catch{} }
+  function toggleTheme(){ setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'); }
+  const saved=(()=>{try{return localStorage.getItem('theme')}catch{return null}})(); if(saved) setTheme(saved);
+  $('#themeBtn').addEventListener('click', toggleTheme);
+  document.addEventListener('keydown', e=>{ if(e.key==='t' || e.key==='T') toggleTheme(); });
+
+  /* ========= Email copy ========= */
+  const EMAIL='hi@ruby747.com';
+  $('#copyBtn').addEventListener('click', async ()=>{
+    try{ await navigator.clipboard.writeText(EMAIL); alert('복사됨: '+EMAIL); }
+    catch{ prompt('복사 실패. 직접 복사하세요 ↓', EMAIL); }
+  });
+
+  /* ========= Scroll progress ========= */
+  const bar=$('#progress');
+  document.addEventListener('scroll', ()=>{
+    const h = document.documentElement;
+    const p = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    bar.style.transform = `scaleX(${p})`;
+  }, {passive:true});
+
+  /* ========= Section link copy ========= */
+  $$( '[data-copy]' ).forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const sel = btn.getAttribute('data-copy');
+      const url = location.origin + location.pathname + sel;
+      try{ await navigator.clipboard.writeText(url); btn.textContent='✅ 복사됨'; setTimeout(()=>btn.textContent='🔗 섹션링크 복사',1200); }catch{}
+    });
+  });
+
+  /* ========= Projects: tag filter + search ========= */
+  const projGrid = $('#projGrid'), projSearch = $('#projSearch');
+  let activeTag='all';
+  $$('.btn[data-tag]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      activeTag = b.dataset.tag;
+      filterProjects();
+    });
+  });
+  projSearch.addEventListener('input', filterProjects);
+  function filterProjects(){
+    const q = (projSearch.value||'').toLowerCase();
+    $$('#projGrid .tile').forEach(el=>{
+      const tags = (el.dataset.tags||'').split(',');
+      const hitTag = (activeTag==='all' || tags.includes(activeTag));
+      const hitText = el.textContent.toLowerCase().includes(q);
+      el.style.display = (hitTag && hitText) ? '' : 'none';
+    });
+  }
+
+  /* ========= GitHub repo loader ========= */
+  async function loadRepos(){
+    const box = $('#repoList'); box.innerHTML = '<div class="hint">불러오는 중…</div>';
+    try{
+      const user = document.documentElement.dataset.user;
+      const res = await fetch(`https://api.github.com/users/${user}/repos?sort=updated&per_page=6`, {headers:{'Accept':'application/vnd.github+json'}});
+      if(!res.ok) throw new Error('GitHub API error');
+      const data = await res.json();
+      box.innerHTML='';
+      data.forEach(repo=>{
+        const card = document.createElement('div'); card.className='tile repo';
+        card.innerHTML = `
+          <h3><a href="${repo.html_url}" target="_blank" rel="noreferrer">${repo.name}</a></h3>
+          <div class="meta">
+            <span>★ ${repo.stargazers_count}</span>
+            <span>🕒 ${new Date(repo.updated_at).toLocaleDateString('ko-KR')}</span>
+            ${repo.language ? `<span>💬 ${repo.language}</span>` : ''}
+          </div>
+          <p class="hint">${repo.description ? repo.description.replace(/</g,'&lt;') : '설명 없음'}</p>
+        `;
+        box.appendChild(card);
+      });
+    }catch(e){ box.innerHTML = '<div class="hint">로드 실패. 나중에 다시 시도</div>'; }
+  }
+  loadRepos();
+
+  /* ========= Gallery loader (from /assets via GitHub API) ========= */
+  const G_EXT = /\.(png|jpe?g|webp|gif|svg)$/i;
+  let galleryList = []; let galleryIndex = 0;
+  async function fetchAssets(){
+    const user = document.documentElement.dataset.user;
+    const repo = document.documentElement.dataset.repo;
+    const branches=['main','master'];
+    for(const b of branches){
+      const url = `https://api.github.com/repos/${user}/${repo}/contents/assets?ref=${b}`;
+      try{
+        const res = await fetch(url, {headers:{'Accept':'application/vnd.github+json'}});
+        if(!res.ok) continue;
+        const arr = await res.json();
+        const files = arr.filter(x=>x.type==='file' && G_EXT.test(x.name)).map(x=>`/assets/${x.name}`);
+        if(files.length) return files;
+      }catch{}
+    }
+    // fallback: 기본 이름들
+    return ['/assets/shot1.jpg','/assets/shot2.jpg','/assets/shot3.jpg'];
+  }
+  async function renderGallery(){
+    const grid = $('#galleryGrid');
+    try{
+      galleryList = await fetchAssets();
+      grid.innerHTML = '';
+      galleryList.forEach((src,i)=>{
+        const a = document.createElement('a'); a.href = src; a.dataset.index = i;
+        const img = document.createElement('img'); img.loading='lazy'; img.alt='gallery';
+        img.src = src;
+        // 실패하면 심플 SVG 대체
+        img.onerror = ()=> img.src = 'data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="100%" height="100%" fill="#111827"/><text x="50%" y="50%" fill="#9aa0ad" font-size="20" text-anchor="middle" dominant-baseline="middle">image not found</text></svg>`);
+        a.appendChild(img); grid.appendChild(a);
+        a.addEventListener('click', (e)=>{ e.preventDefault(); openLightbox(+a.dataset.index); });
+      });
+    }catch{
+      grid.innerHTML = '<div class="hint">갤러리를 불러올 수 없음</div>';
+    }
+  }
+  renderGallery();
+
+  /* ========= Lightbox ========= */
+  const lb = $('#lightbox'), lbImg = $('#lightImg');
+  function openLightbox(i){ galleryIndex = i; lb.setAttribute('aria-hidden','false'); lbImg.src = galleryList[galleryIndex]; }
+  function closeLightbox(){ lb.setAttribute('aria-hidden','true'); lbImg.src=''; }
+  $('#closeImg').onclick=closeLightbox;
+  $('#prevImg').onclick=()=>{ galleryIndex=(galleryIndex-1+galleryList.length)%galleryList.length; lbImg.src=galleryList[galleryIndex]; };
+  $('#nextImg').onclick=()=>{ galleryIndex=(galleryIndex+1)%galleryList.length; lbImg.src=galleryList[galleryIndex]; };
+  document.addEventListener('keydown', e=>{
+    if(lb.getAttribute('aria-hidden')==='false'){
+      if(e.key==='Escape') closeLightbox();
+      if(e.key==='ArrowLeft') $('#prevImg').click();
+      if(e.key==='ArrowRight') $('#nextImg').click();
+    }
+  });
+
+  /* ========= Command palette ========= */
+  const cmd = $('#cmdk'), cmdInput = $('#cmdInput'), cmdList = $('#cmdList');
+  const CMDS = [
+    {label:'Go: Top', action:()=>window.scrollTo({top:0,behavior:'smooth'}), k:'G T'},
+    {label:'Go: Projects', action:()=>location.hash='#projects', k:'G P'},
+    {label:'Go: Gallery', action:()=>location.hash='#gallery', k:'G G'},
+    {label:'Go: Repos', action:()=>location.hash='#repos', k:'G R'},
+    {label:'Theme: Toggle', action:toggleTheme, k:'T'},
+    {label:'Copy: Email', action:async()=>{try{await navigator.clipboard.writeText(EMAIL);}catch{}}, k:'C E'},
+    {label:'Open: GitHub profile', action:()=>window.open('https://github.com/'+document.documentElement.dataset.user,'_blank'), k:'O G'},
+  ];
+  function openCmd(){ cmd.setAttribute('aria-hidden','false'); cmdInput.value=''; renderCmd(''); cmdInput.focus(); }
+  function closeCmd(){ cmd.setAttribute('aria-hidden','true'); }
+  function renderCmd(q){
+    const query = q.toLowerCase();
+    const items = CMDS.filter(c=>c.label.toLowerCase().includes(query));
+    cmdList.innerHTML = items.map(it=>`<div class="cmdk-item" role="option"><strong>${it.label}</strong><kbd>${it.k}</kbd></div>`).join('');
+    $$('.cmdk-item', cmdList).forEach((el,i)=>{ el.addEventListener('click', ()=>{ items[i].action(); closeCmd(); }); });
+  }
+  $('#cmdBtn').onclick=openCmd;
+  cmd.addEventListener('click', e=>{ if(e.target===cmd) closeCmd(); });
+  cmdInput.addEventListener('input', ()=>renderCmd(cmdInput.value));
+  document.addEventListener('keydown', e=>{
+    const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+    if((isMac && e.metaKey && e.key.toLowerCase()==='k') || (!isMac && e.ctrlKey && e.key.toLowerCase()==='k') || e.key==='/'){
+      e.preventDefault(); (cmd.getAttribute('aria-hidden')==='true') ? openCmd() : closeCmd();
+    }
+    if(e.key==='Escape' && cmd.getAttribute('aria-hidden')==='false') closeCmd();
+  });
+
+  /* ========= Service Worker (옵션) ========= */
+  if('serviceWorker' in navigator){
+    // sw.js 파일이 있을 때만 작동. 없으면 무시.
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  }
+  </script>
+</body>
+</html>
