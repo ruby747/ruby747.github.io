@@ -68,6 +68,23 @@ function getYouTubeId(url){
   return match ? match[1] : null;
 }
 
+const ytMetaCache = new Map();
+async function fetchYouTubeMeta(id){
+  if(!id) return null;
+  if(ytMetaCache.has(id)) return ytMetaCache.get(id);
+  const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`;
+  try{
+    const res = await fetch(url, {headers:{'Accept':'application/json'}});
+    if(!res.ok) throw new Error('oembed status '+res.status);
+    const data = await res.json();
+    ytMetaCache.set(id, data);
+    return data;
+  }catch(err){
+    ytMetaCache.set(id, null);
+    return null;
+  }
+}
+
 /* ========= Video works loader ========= */
 async function loadVideoGrid(){
   const grid = $('#videoGrid');
@@ -82,16 +99,30 @@ async function loadVideoGrid(){
     }
     grid.innerHTML = '';
     const ordered = [...list].sort((a,b)=> (b && b.featured ? 1 : 0) - (a && a.featured ? 1 : 0));
-    ordered.forEach(item=>{
+    const enriched = await Promise.all(ordered.map(async raw=>{
+      const item = {...raw};
+      const ytId = raw && (raw.youtubeId || getYouTubeId(raw.youtube || raw.link || raw.embed));
+      const linkUrl = (raw && raw.link) || (ytId ? `https://youtu.be/${ytId}` : null);
+      if(ytId){
+        const meta = await fetchYouTubeMeta(ytId);
+        if(meta){
+          if(!item.title) item.title = meta.title;
+          if(!item.thumbnail) item.thumbnail = meta.thumbnail_url;
+          if(!item.description && meta.author_name){
+            item.description = `${meta.author_name} 채널`;
+          }
+        }
+      }
+      return {item, ytId, linkUrl};
+    }));
+
+    enriched.forEach(({item, ytId, linkUrl})=>{
       const card = document.createElement('article');
       card.className = 'media-card';
       if(item && item.featured) card.dataset.featured = 'true';
 
       const preview = document.createElement('div');
       preview.className = 'media-preview';
-
-      const ytId = item && (item.youtubeId || getYouTubeId(item.youtube || item.link || item.embed));
-      const linkUrl = (item && item.link) || (ytId ? `https://youtu.be/${ytId}` : null);
 
       if(ytId){
         const anchor = document.createElement('a');
