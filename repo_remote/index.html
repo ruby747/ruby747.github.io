@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko" data-theme="light" data-user="ruby747" data-repo="ruby747.github.io">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ruby747 — Home</title>
+  <meta name="description" content="심플하고 담백한 개인 홈. 프로젝트와 기록을 가볍게 모았습니다." />
+  <meta property="og:title" content="ruby747 — Home" />
+  <meta property="og:description" content="심플하고 담백한 개인 홈" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/assets/og.jpg" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>💎</text></svg>">
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <!-- 상단 스크롤 진행바 -->
+  <div class="progress" id="progress"></div>
+
+  <div class="wrap">
+    <div class="shell">
+
+      <!-- Header -->
+      <header>
+        <div class="brand">
+          <div class="dot" aria-hidden="true"></div>
+          <div>
+            <div class="title">ruby747.com</div>
+            <div class="mini">Seoul · <span id="clock" aria-live="polite">--:--:--</span></div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button id="themeBtn" class="btn" title="테마 전환">🌓 테마</button>
+          <button id="copyBtn" class="btn" title="이메일 복사">📋 메일</button>
+          <a class="btn" href="https://github.com/ruby747" target="_blank" rel="noreferrer" title="GitHub">🐙 GitHub</a>
+          <button id="cmdBtn" class="btn primary" title="명령 팔레트">⌨️ Command</button>
+        </div>
+      </header>
+
+      <!-- Main grid -->
+      <div class="grid">
+        <main class="card" id="top">
+          <h1>ruby747 base</h1>
+          <p>심플하고 담백한 개인 홈. 프로젝트와 기록을 가볍게 모았습니다.</p>
+
+          <div class="badges">
+            <span class="badge">Visits (local): <strong id="visits">0</strong></span>
+            <span class="badge">⚡ GitHub Pages · Cloudflare</span>
+          </div>
+
+          <!-- Video works -->
+          <section class="section" id="videos">
+            <h2>Video Works</h2>
+            <p class="hint">영상 편집 작업물을 모아둔 공간입니다.</p>
+            <div class="media-grid" id="videoGrid" aria-live="polite">
+              <div class="hint">영상 리스트를 불러오는 중…</div>
+            </div>
+          </section>
+
+          <!-- Projects -->
+          <section class="section" id="projects">
+            <h2>Projects</h2>
+
+            <!-- 필터 -->
+            <div class="badges">
+              <span class="badge">Filter:</span>
+              <button class="btn" data-tag="all">All</button>
+              <button class="btn" data-tag="web">Web</button>
+              <button class="btn" data-tag="game">Game</button>
+              <button class="btn" data-tag="note">Note</button>
+              <input id="projSearch" class="btn" placeholder="검색…" style="flex:1; min-width:160px" />
+            </div>
+
+            <div class="tiles" id="projGrid">
+              <a class="tile" href="/suika" data-tags="game" target="_blank" rel="noreferrer">
+                <h3>Suika Clone</h3>
+                <p class="hint">브라우저 수박게임</p>
+              </a>
+              <a class="tile" href="https://pr1-app.ruby747.com/" data-tags="note" target="_blank" rel="noreferrer">
+                <h3>Bookmarks</h3>
+                <p class="hint">스트리밍/메모 정리</p>
+              </a>
+            </div>
+          </section>
+
+          <!-- Apps -->
+          <section class="section" id="apps">
+            <h2>Published Apps</h2>
+            <p class="hint">직접 제작한 앱 소개와 앱스토어 링크입니다.</p>
+            <div class="app-grid" id="appGrid" aria-live="polite">
+              <div class="hint">앱 정보를 불러오는 중…</div>
+            </div>
+          </section>
+
+          <!-- Gallery -->
+          <section class="section" id="gallery">
+            <h2>Gallery</h2>
+            <div class="gallery" id="galleryGrid" aria-live="polite"></div>
+          </section>
+
+          <!-- Links -->
+          <section class="section" id="links">
+            <h2>Links</h2>
+            <div class="links">
+              <a href="mailto:jun2002usa@gmail.com">메일</a>
+              <a href="https://x.com/ellem1218" target="_blank" rel="noreferrer">X</a>
+              <a href="https://twitch.tv/ecoffee" target="_blank" rel="noreferrer">Twitch</a>
+              <a href="https://www.youtube.com/@%EC%BB%A4%ED%94%BC%EC%BD%A9" target="_blank" rel="noreferrer">YouTube</a>
+              <button class="btn" data-copy="#links">🔗 섹션링크 복사</button>
+            </div>
+          </section>
+
+          <div class="footer">
+            <div>© <span id="year"></span> ruby747 — GitHub Pages</div>
+            <div class="hint">Cloudflare Proxy (권장: HTTPS, Full/Strict)</div>
+          </div>
+        </main>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Command palette -->
+  <div class="cmdk" id="cmdk" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="cmdk-panel" role="listbox" aria-label="Command palette">
+      <div class="cmdk-head"><input id="cmdInput" placeholder="명령 또는 검색어 입력… (닫기: Esc)" autocomplete="off" /></div>
+      <div class="cmdk-list" id="cmdList"></div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <img id="lightImg" alt="">
+    <button class="arrow left" id="prevOverlay" aria-label="Previous image">◀︎</button>
+    <button class="arrow right" id="nextOverlay" aria-label="Next image">▶︎</button>
+    <div class="nav">
+      <button class="btn" id="prevImg">◀︎ Prev</button>
+      <button class="btn" id="nextImg">Next ▶︎</button>
+      <button class="btn" id="closeImg">✕ Close</button>
+    </div>
+  </div>
+
+  <noscript>자바스크립트를 켜면 시계/갤러리/팔레트 기능이 활성화됩니다.</noscript>
+
+  <script src="./js/main.js"></script>
+</body>
+</html>
