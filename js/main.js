@@ -85,6 +85,32 @@ async function fetchYouTubeMeta(id){
   }
 }
 
+const APP_ID_RE = /id(\d{3,})/;
+function getAppStoreId(url){
+  if(!url || typeof url !== 'string') return null;
+  const match = url.match(APP_ID_RE);
+  return match ? match[1] : null;
+}
+
+const appMetaCache = new Map();
+async function fetchAppStoreMeta(id, country='kr'){
+  if(!id) return null;
+  const key = `${country}:${id}`;
+  if(appMetaCache.has(key)) return appMetaCache.get(key);
+  const url = `https://itunes.apple.com/lookup?id=${id}&country=${country}`;
+  try{
+    const res = await fetch(url, {headers:{'Accept':'application/json'}});
+    if(!res.ok) throw new Error('itunes status '+res.status);
+    const data = await res.json();
+    const meta = Array.isArray(data.results) && data.results.length ? data.results[0] : null;
+    appMetaCache.set(key, meta);
+    return meta;
+  }catch(err){
+    appMetaCache.set(key, null);
+    return null;
+  }
+}
+
 /* ========= Video works loader ========= */
 async function loadVideoGrid(){
   const grid = $('#videoGrid');
@@ -224,11 +250,40 @@ async function loadApps(){
       return;
     }
     grid.innerHTML = '';
-    list.forEach(app=>{
-      const wrapper = document.createElement(app.storeUrl ? 'a' : 'article');
+    const enriched = await Promise.all(list.map(async raw=>{
+      const app = {...raw};
+      const linkUrl = app.storeUrl || app.link || null;
+      const id = getAppStoreId(linkUrl);
+      if(id){
+        const meta = await fetchAppStoreMeta(id, app.country || 'kr');
+        if(meta){
+          if(!app.name) app.name = meta.trackName;
+          if(!app.icon) app.icon = meta.artworkUrl512 || meta.artworkUrl100 || meta.artworkUrl60;
+          if(!app.tagline){
+            const parts = [];
+            if(meta.primaryGenreName) parts.push(meta.primaryGenreName);
+            if(meta.formattedPrice && meta.formattedPrice !== 'Free') parts.push(meta.formattedPrice);
+            if(parts.length) app.tagline = parts.join(' · ');
+          }
+          if(!app.platforms){
+            const platforms = [];
+            const devices = Array.isArray(meta.supportedDevices) ? meta.supportedDevices : [];
+            if(devices.some(d=>d.includes('iPhone'))) platforms.push('iPhone');
+            if(devices.some(d=>d.includes('iPad'))) platforms.push('iPad');
+            if(devices.some(d=>d.includes('Mac'))) platforms.push('Mac');
+            if(devices.some(d=>d.includes('Watch'))) platforms.push('Apple Watch');
+            if(platforms.length) app.platforms = platforms;
+          }
+        }
+      }
+      return {app, linkUrl};
+    }));
+
+    enriched.forEach(({app, linkUrl})=>{
+      const wrapper = document.createElement(linkUrl ? 'a' : 'article');
       wrapper.className = 'app-card';
-      if(app.storeUrl){
-        wrapper.href = app.storeUrl;
+      if(linkUrl){
+        wrapper.href = linkUrl;
         wrapper.target = '_blank';
         wrapper.rel = 'noreferrer';
       }
