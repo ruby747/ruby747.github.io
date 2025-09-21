@@ -1,0 +1,24 @@
+[
+  {
+    "title": "대표 영상 (제목 입력)",
+    "description": "이 영상에 대한 간단한 설명을 적어주세요.",
+    "youtubeId": "9AjH9OYJAhs",
+    "link": "https://youtu.be/9AjH9OYJAhs",
+    "featured": true
+  },
+  {
+    "title": "영상 작품 1 (제목 입력)",
+    "description": "필요하면 설명을 추가하세요.",
+    "link": "https://youtu.be/4YdmAYuff0w"
+  },
+  {
+    "title": "영상 작품 2 (제목 입력)",
+    "description": "필요하면 설명을 추가하세요.",
+    "link": "https://youtu.be/3daMIb1fZJQ"
+  },
+  {
+    "title": "영상 작품 3 (제목 입력)",
+    "description": "필요하면 설명을 추가하세요.",
+    "link": "https://youtu.be/vsOxh8Gm5As"
+  }
+]

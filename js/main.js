@@ -61,6 +61,189 @@ function filterProjects(){
   });
 }
 
+const YT_RE = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/|live\/|v\/))([\w-]{11})/;
+function getYouTubeId(url){
+  if(!url || typeof url !== 'string') return null;
+  const match = url.match(YT_RE);
+  return match ? match[1] : null;
+}
+
+/* ========= Video works loader ========= */
+async function loadVideoGrid(){
+  const grid = $('#videoGrid');
+  if(!grid) return;
+  try{
+    const res = await fetch('./media/videos.json', {cache:'no-cache'});
+    if(!res.ok) throw new Error('status '+res.status);
+    const list = await res.json();
+    if(!Array.isArray(list) || !list.length){
+      grid.innerHTML = '<div class="hint">`media/videos.json` 파일에 YouTube 링크를 추가하면 자동으로 썸네일이 나타납니다.</div>';
+      return;
+    }
+    grid.innerHTML = '';
+    const ordered = [...list].sort((a,b)=> (b && b.featured ? 1 : 0) - (a && a.featured ? 1 : 0));
+    ordered.forEach(item=>{
+      const card = document.createElement('article');
+      card.className = 'media-card';
+      if(item && item.featured) card.dataset.featured = 'true';
+
+      const preview = document.createElement('div');
+      preview.className = 'media-preview';
+
+      const ytId = item && (item.youtubeId || getYouTubeId(item.youtube || item.link || item.embed));
+      const linkUrl = (item && item.link) || (ytId ? `https://youtu.be/${ytId}` : null);
+
+      if(ytId){
+        const anchor = document.createElement('a');
+        anchor.className = 'media-thumb';
+        anchor.href = linkUrl;
+        anchor.target = '_blank';
+        anchor.rel = 'noreferrer';
+
+        const img = document.createElement('img');
+        img.loading = 'lazy';
+        img.src = (item && item.thumbnail) || `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`;
+        img.alt = (item && item.title) ? `${item.title} 썸네일` : 'YouTube thumbnail';
+        anchor.appendChild(img);
+
+        const play = document.createElement('span');
+        play.className = 'media-play';
+        play.textContent = '▶';
+        anchor.appendChild(play);
+
+        preview.appendChild(anchor);
+      }else if(item && item.embed){
+        const iframe = document.createElement('iframe');
+        iframe.src = item.embed;
+        iframe.title = item.title || 'video';
+        iframe.loading = 'lazy';
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        preview.appendChild(iframe);
+      }else if(item.src){
+        const video = document.createElement('video');
+        video.controls = true;
+        video.preload = 'metadata';
+        if(item.poster) video.poster = item.poster;
+        const source = document.createElement('source');
+        source.src = item.src;
+        source.type = item.type || 'video/mp4';
+        video.appendChild(source);
+        const fallback = document.createElement('p');
+        fallback.className = 'hint';
+        fallback.textContent = '해당 브라우저에서 영상을 재생할 수 없습니다.';
+        video.appendChild(fallback);
+        preview.appendChild(video);
+      }else{
+        const empty = document.createElement('div');
+        empty.className = 'hint';
+        empty.textContent = '영상 경로가 설정되지 않았습니다.';
+        preview.appendChild(empty);
+      }
+
+      const meta = document.createElement('div');
+      meta.className = 'media-meta';
+      const title = document.createElement('h3');
+      const baseTitle = (item && item.title) ? item.title : '제목 미정';
+      title.textContent = (item && item.featured) ? `⭐ ${baseTitle}` : baseTitle;
+      meta.appendChild(title);
+      if(item && item.description){
+        const desc = document.createElement('p');
+        desc.className = 'hint';
+        desc.textContent = item.description;
+        meta.appendChild(desc);
+      }
+      const tools = Array.isArray(item && item.tools) ? item.tools : (item && typeof item.tools === 'string' ? [item.tools] : []);
+      if(tools.length){
+        const toolLine = document.createElement('p');
+        toolLine.className = 'hint';
+        toolLine.textContent = `툴 · ${tools.join(', ')}`;
+        meta.appendChild(toolLine);
+      }
+      if(linkUrl){
+        const link = document.createElement('a');
+        link.className = 'btn link-btn';
+        link.href = linkUrl;
+        link.target = '_blank';
+        link.rel = 'noreferrer';
+        link.textContent = (item && item.linkText) || (ytId ? 'YouTube로 보기' : '원본 보기');
+        meta.appendChild(link);
+      }
+
+      card.appendChild(preview);
+      card.appendChild(meta);
+      grid.appendChild(card);
+    });
+  }catch(err){
+    grid.innerHTML = '<div class="hint">영상 데이터를 불러오는 중 오류가 발생했습니다.</div>';
+  }
+}
+loadVideoGrid();
+
+/* ========= App showcase loader ========= */
+async function loadApps(){
+  const grid = $('#appGrid');
+  if(!grid) return;
+  try{
+    const res = await fetch('./data/apps.json', {cache:'no-cache'});
+    if(!res.ok) throw new Error('status '+res.status);
+    const list = await res.json();
+    if(!Array.isArray(list) || !list.length){
+      grid.innerHTML = '<div class="hint">`data/apps.json` 파일에 앱 정보를 추가하면 이곳에 나타납니다.</div>';
+      return;
+    }
+    grid.innerHTML = '';
+    list.forEach(app=>{
+      const wrapper = document.createElement(app.storeUrl ? 'a' : 'article');
+      wrapper.className = 'app-card';
+      if(app.storeUrl){
+        wrapper.href = app.storeUrl;
+        wrapper.target = '_blank';
+        wrapper.rel = 'noreferrer';
+      }
+
+      const icon = document.createElement('div');
+      icon.className = 'app-icon';
+      if(app.icon){
+        const img = document.createElement('img');
+        img.src = app.icon;
+        img.alt = app.name ? `${app.name} icon` : 'app icon';
+        img.loading = 'lazy';
+        icon.appendChild(img);
+      }else{
+        icon.textContent = '📱';
+      }
+
+      const meta = document.createElement('div');
+      meta.className = 'app-meta';
+      const name = document.createElement('h3');
+      name.textContent = app.name || '이름 미정';
+      meta.appendChild(name);
+      if(app.tagline){
+        const tagline = document.createElement('p');
+        tagline.className = 'hint';
+        tagline.textContent = app.tagline;
+        meta.appendChild(tagline);
+      }
+      const platforms = Array.isArray(app.platforms) ? app.platforms : (typeof app.platforms === 'string' ? [app.platforms] : []);
+      if(platforms.length){
+        const platform = document.createElement('p');
+        platform.className = 'hint';
+        platform.textContent = platforms.join(' · ');
+        meta.appendChild(platform);
+      }
+
+      wrapper.appendChild(icon);
+      wrapper.appendChild(meta);
+
+      grid.appendChild(wrapper);
+    });
+  }catch(err){
+    grid.innerHTML = '<div class="hint">앱 데이터를 불러오는 중 오류가 발생했습니다.</div>';
+  }
+}
+loadApps();
+
 /* ========= Gallery loader (from /assets via GitHub API) ========= */
 const G_EXT = /\.(png|jpe?g|webp|gif|svg)$/i;
 let galleryList = []; let galleryIndex = 0;
@@ -132,7 +315,9 @@ document.addEventListener('keydown', e=>{
 const cmd = $('#cmdk'), cmdInput = $('#cmdInput'), cmdList = $('#cmdList');
 const CMDS = [
   {label:'Go: Top', action:()=>window.scrollTo({top:0,behavior:'smooth'})},
+  {label:'Go: Video Works', action:()=>location.hash='#videos'},
   {label:'Go: Projects', action:()=>location.hash='#projects'},
+  {label:'Go: Apps', action:()=>location.hash='#apps'},
   {label:'Go: Gallery', action:()=>location.hash='#gallery'},
   {label:'Theme: Toggle', action:toggleTheme},
   {label:'Copy: Email', action:async()=>{try{await navigator.clipboard.writeText(EMAIL);}catch{}}},
@@ -158,4 +343,3 @@ if('serviceWorker' in navigator){
   // sw.js 파일이 있을 때만 작동. 없으면 무시.
   navigator.serviceWorker.register('/sw.js').catch(()=>{});
 }
-

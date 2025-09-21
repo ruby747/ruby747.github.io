@@ -57,6 +57,29 @@ p{margin:8px 0 0; color:var(--muted); line-height:1.7}
 .tiles{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-top:10px}
 .tile{padding:16px; background:linear-gradient(180deg, var(--soft), transparent 120%); border:1px solid var(--line); border-radius:16px; transition:transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease), border-color var(--speed) var(--ease)}
 .tile:hover{transform:translateY(-2px); box-shadow:var(--shadow-lg); border-color:color-mix(in oklab, var(--line), var(--accent) 20%)}
+.media-grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin-top:12px}
+.media-card{display:flex; flex-direction:column; gap:12px; padding:16px; background:linear-gradient(180deg, var(--soft), transparent 120%); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); transition:transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease), border-color var(--speed) var(--ease)}
+.media-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-lg); border-color:color-mix(in oklab, var(--line), var(--accent) 18%)}
+.media-card[data-featured="true"]{border-color:color-mix(in oklab, var(--line), var(--accent) 32%); box-shadow:var(--shadow-lg); background:linear-gradient(180deg, color-mix(in oklab, var(--soft), var(--accent) 12%), transparent 130%)}
+.media-preview{position:relative; border-radius:14px; overflow:hidden; background:var(--soft); aspect-ratio:16/9}
+.media-thumb{position:relative; display:block; width:100%; height:100%;}
+.media-thumb img{width:100%; height:100%; object-fit:cover; display:block; transition:transform var(--speed) var(--ease), filter var(--speed) var(--ease)}
+.media-play{position:absolute; inset:auto 12px 12px auto; display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px; border-radius:50%; background:rgba(15,18,24,.76); color:white; font-weight:600; font-size:20px; box-shadow:0 10px 24px rgba(0,0,0,.32); border:1px solid rgba(148,163,184,.28); transition:transform var(--speed) var(--ease), background var(--speed) var(--ease)}
+.media-card:hover .media-thumb img{transform:scale(1.03); filter:brightness(1.05)}
+.media-card:hover .media-play{transform:scale(1.04); background:rgba(124,58,237,.85)}
+.media-preview video,
+.media-preview iframe{width:100%; height:100%; display:block; object-fit:cover; border:0; background:black}
+.media-preview video{background:black}
+.media-meta h3{margin:0; font-size:18px}
+.media-meta .btn{margin-top:10px}
+.app-grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-top:12px}
+.app-card{display:flex; align-items:center; gap:12px; padding:16px; border:1px solid var(--line); border-radius:16px; background:linear-gradient(180deg, var(--soft), transparent 120%); transition:transform var(--speed) var(--ease), box-shadow var(--speed) var(--ease), border-color var(--speed) var(--ease)}
+.app-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-lg); border-color:color-mix(in oklab, var(--line), var(--accent) 18%)}
+.app-icon{width:58px; height:58px; border-radius:14px; border:1px solid var(--line); background:var(--soft); display:flex; align-items:center; justify-content:center; font-size:26px; overflow:hidden}
+.app-icon img{width:100%; height:100%; object-fit:cover; display:block}
+.app-meta h3{margin:0; font-size:18px}
+.app-meta p{margin:4px 0 0}
+.btn.link-btn{display:inline-flex; align-items:center; gap:6px; width:max-content; border:1px solid var(--line); background:var(--soft)}
 
 /* ========= Repo list ========= */
 .row{display:grid; gap:12px}
@@ -109,4 +132,3 @@ p{margin:8px 0 0; color:var(--muted); line-height:1.7}
   .gallery img{transition:none}
   .lightbox .arrow{transition:none}
 }
-
