@@ -111,7 +111,7 @@ async function fetchAppStoreMeta(id, country='kr'){
   }
 }
 
-/* ========= Video works loader ========= */
+/* ========= 영상편집 작업물 loader ========= */
 async function loadVideoGrid(){
   const grid = $('#videoGrid');
   if(!grid) return;
@@ -401,9 +401,9 @@ document.addEventListener('keydown', e=>{
 const cmd = $('#cmdk'), cmdInput = $('#cmdInput'), cmdList = $('#cmdList');
 const CMDS = [
   {label:'Go: Top', action:()=>window.scrollTo({top:0,behavior:'smooth'})},
-  {label:'Go: Video Works', action:()=>location.hash='#videos'},
-  {label:'Go: Projects', action:()=>location.hash='#projects'},
-  {label:'Go: Apps', action:()=>location.hash='#apps'},
+  {label:'Go: 영상편집 작업물', action:()=>location.hash='#videos'},
+  {label:'Go: 웹페이지 작업물', action:()=>location.hash='#projects'},
+  {label:'Go: 앱 작업물', action:()=>location.hash='#apps'},
   {label:'Go: Gallery', action:()=>location.hash='#gallery'},
   {label:'Theme: Toggle', action:toggleTheme},
   {label:'Copy: Email', action:async()=>{try{await navigator.clipboard.writeText(EMAIL);}catch{}}},
