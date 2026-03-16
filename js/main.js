@@ -1,392 +1,212 @@
-/* ===================================================
-   ruby747 — main.js (Full Rewrite)
-   =================================================== */
-
+/* ===========================================================
+   ruby747 — main.js (bento rewrite)
+   =========================================================== */
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-/* ---------- Clock ---------- */
+/* --- Clock --- */
 function tick() {
   const el = $('#clock');
-  if (el) el.textContent = new Date().toLocaleTimeString('ko-KR', { hour12: false, timeZone: 'Asia/Seoul' });
+  if (el) el.textContent = new Date().toLocaleTimeString('ko-KR', {
+    hour12: false, timeZone: 'Asia/Seoul', hour: '2-digit', minute: '2-digit'
+  });
 }
-tick();
-setInterval(tick, 1000);
+tick(); setInterval(tick, 1000);
 
-/* ---------- Year ---------- */
-const yearEl = $('#year');
-if (yearEl) yearEl.textContent = new Date().getFullYear();
+/* --- Year --- */
+const y = $('#year'); if (y) y.textContent = new Date().getFullYear();
 
-/* ---------- Theme ---------- */
+/* --- Theme --- */
 const root = document.documentElement;
-function setTheme(mode) {
-  root.setAttribute('data-theme', mode);
-  try { localStorage.setItem('theme', mode); } catch {}
-  const meta = $('meta[name="theme-color"]');
-  if (meta) meta.content = mode === 'dark' ? '#0a0a0b' : '#fafafa';
+function setTheme(m) {
+  root.setAttribute('data-theme', m);
+  try { localStorage.setItem('theme', m); } catch {}
 }
-function toggleTheme() {
-  setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-}
-const saved = (() => { try { return localStorage.getItem('theme'); } catch { return null; } })();
-if (saved) setTheme(saved);
-$('#themeBtn').addEventListener('click', toggleTheme);
+function toggle() { setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'); }
+try { const s = localStorage.getItem('theme'); if (s) setTheme(s); } catch {}
+$('#themeBtn').addEventListener('click', toggle);
 
-/* ---------- Scrolled Nav ---------- */
-const nav = $('.nav');
-function checkScroll() {
-  if (!nav) return;
-  nav.classList.toggle('scrolled', window.scrollY > 40);
-}
-window.addEventListener('scroll', checkScroll, { passive: true });
-checkScroll();
-
-/* ---------- Scroll Reveal ---------- */
-function initReveal() {
-  const els = $$('.section-header, .project-card, .video-card, .app-card, .link-card, .gallery-item');
-  els.forEach(el => el.classList.add('reveal'));
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-  els.forEach(el => observer.observe(el));
-}
-// Run after dynamic content loads
-let revealTimer;
-function scheduleReveal() {
-  clearTimeout(revealTimer);
-  revealTimer = setTimeout(initReveal, 100);
-}
-
-/* ---------- Project Filter ---------- */
-const projGrid = $('#projGrid');
-const projSearch = $('#projSearch');
+/* --- Filter --- */
 let activeTag = 'all';
-
-$$('.chip[data-tag]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    $$('.chip[data-tag]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeTag = btn.dataset.tag;
-    filterProjects();
+const projSearch = $('#projSearch');
+$$('.tag[data-tag]').forEach(b => {
+  b.addEventListener('click', () => {
+    $$('.tag[data-tag]').forEach(t => t.classList.remove('active'));
+    b.classList.add('active');
+    activeTag = b.dataset.tag;
+    filterProj();
   });
 });
-if (projSearch) projSearch.addEventListener('input', filterProjects);
-
-function filterProjects() {
+if (projSearch) projSearch.addEventListener('input', filterProj);
+function filterProj() {
   const q = (projSearch?.value || '').toLowerCase();
-  $$('#projGrid .project-card').forEach(el => {
+  $$('#projGrid .proj').forEach(el => {
     const tags = (el.dataset.tags || '').split(',');
-    const hitTag = activeTag === 'all' || tags.includes(activeTag);
-    const hitText = el.textContent.toLowerCase().includes(q);
-    el.style.display = hitTag && hitText ? '' : 'none';
+    const ok = (activeTag === 'all' || tags.includes(activeTag)) && el.textContent.toLowerCase().includes(q);
+    el.style.display = ok ? '' : 'none';
   });
 }
 
-/* ---------- YouTube helpers ---------- */
+/* --- YouTube --- */
 const YT_RE = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/|live\/|v\/))([\w-]{11})/;
-function getYouTubeId(url) {
-  if (!url || typeof url !== 'string') return null;
-  const m = url.match(YT_RE);
-  return m ? m[1] : null;
-}
-
+const ytId = url => { const m = (url || '').match(YT_RE); return m ? m[1] : null; };
 const ytCache = new Map();
-async function fetchYTMeta(id) {
+async function ytMeta(id) {
   if (!id) return null;
   if (ytCache.has(id)) return ytCache.get(id);
   try {
-    const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`);
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-    ytCache.set(id, data);
-    return data;
-  } catch {
-    ytCache.set(id, null);
-    return null;
-  }
+    const r = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`);
+    if (!r.ok) throw 0;
+    const d = await r.json(); ytCache.set(id, d); return d;
+  } catch { ytCache.set(id, null); return null; }
 }
 
-/* ---------- Video Grid Loader ---------- */
+/* --- Video loader --- */
 async function loadVideos() {
-  const grid = $('#videoGrid');
-  if (!grid) return;
+  const g = $('#videoGrid'); if (!g) return;
   try {
-    const res = await fetch('./media/videos.json', { cache: 'no-cache' });
-    if (!res.ok) throw new Error();
-    const list = await res.json();
-    if (!Array.isArray(list) || !list.length) {
-      grid.innerHTML = '<div class="placeholder-text">영상이 아직 없습니다.</div>';
-      return;
-    }
-    grid.innerHTML = '';
-
+    const r = await fetch('./media/videos.json', { cache: 'no-cache' });
+    if (!r.ok) throw 0;
+    const list = await r.json();
+    if (!Array.isArray(list) || !list.length) { g.innerHTML = '<div class="muted-sm">영상이 없습니다.</div>'; return; }
+    g.innerHTML = '';
     const sorted = [...list].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-    const enriched = await Promise.all(sorted.map(async raw => {
+    const data = await Promise.all(sorted.map(async raw => {
       const item = { ...raw };
-      const ytId = raw.youtubeId || getYouTubeId(raw.youtube || raw.link || raw.embed);
-      const linkUrl = raw.link || (ytId ? `https://youtu.be/${ytId}` : null);
-      if (ytId) {
-        const meta = await fetchYTMeta(ytId);
-        if (meta) {
-          if (!item.title) item.title = meta.title;
-          if (!item.thumbnail) item.thumbnail = meta.thumbnail_url;
-          if (!item.description && meta.author_name) item.description = `${meta.author_name} 채널`;
-        }
+      const id = raw.youtubeId || ytId(raw.link || raw.youtube || raw.embed);
+      const link = raw.link || (id ? `https://youtu.be/${id}` : null);
+      if (id) {
+        const m = await ytMeta(id);
+        if (m) { if (!item.title) item.title = m.title; if (!item.thumbnail) item.thumbnail = m.thumbnail_url; if (!item.description && m.author_name) item.description = m.author_name + ' 채널'; }
       }
-      return { item, ytId, linkUrl };
+      return { item, id, link };
     }));
-
-    enriched.forEach(({ item, ytId, linkUrl }) => {
-      const card = document.createElement('a');
-      card.className = 'video-card';
-      if (linkUrl) { card.href = linkUrl; card.target = '_blank'; card.rel = 'noreferrer'; }
-      if (item.featured) card.dataset.featured = 'true';
-
-      const thumbSrc = item.thumbnail || (ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : '');
+    data.forEach(({ item, id, link }) => {
+      const a = document.createElement('a');
+      a.className = 'vid-card';
+      if (link) { a.href = link; a.target = '_blank'; a.rel = 'noreferrer'; }
+      if (item.featured) a.dataset.featured = 'true';
+      const thumb = item.thumbnail || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '');
       const title = item.title || '제목 미정';
-      const desc = item.description || '';
-
-      card.innerHTML = `
-        <div class="video-thumb">
-          ${thumbSrc ? `<img src="${thumbSrc}" alt="${title}" loading="lazy">` : ''}
-          <div class="video-play"><span>▶</span></div>
-          ${item.featured ? '<div class="video-featured-badge">Featured</div>' : ''}
+      a.innerHTML = `
+        <div class="vid-thumb">
+          ${thumb ? `<img src="${thumb}" alt="${title}" loading="lazy">` : ''}
+          <div class="vid-play"><div class="vid-play-btn">▶</div></div>
+          ${item.featured ? '<div class="vid-feat">Featured</div>' : ''}
         </div>
-        <div class="video-info">
+        <div class="vid-info">
           <h3>${title}</h3>
-          ${desc ? `<p>${desc}</p>` : ''}
-        </div>
-      `;
-      grid.appendChild(card);
+          ${item.description ? `<p>${item.description}</p>` : ''}
+        </div>`;
+      g.appendChild(a);
     });
-
-    scheduleReveal();
-  } catch {
-    grid.innerHTML = '<div class="placeholder-text">영상을 불러올 수 없습니다.</div>';
-  }
+  } catch { g.innerHTML = '<div class="muted-sm">영상을 불러올 수 없습니다.</div>'; }
 }
 loadVideos();
 
-/* ---------- App Store helpers ---------- */
-const APP_ID_RE = /id(\d{3,})/;
-function getAppStoreId(url) {
-  if (!url || typeof url !== 'string') return null;
-  const m = url.match(APP_ID_RE);
-  return m ? m[1] : null;
-}
-
+/* --- App loader --- */
+const appIdRe = /id(\d{3,})/;
 const appCache = new Map();
-async function fetchAppMeta(id, country = 'kr') {
-  const key = `${country}:${id}`;
-  if (appCache.has(key)) return appCache.get(key);
+async function appMeta(id, c = 'kr') {
+  const k = c + ':' + id; if (appCache.has(k)) return appCache.get(k);
   try {
-    const res = await fetch(`https://itunes.apple.com/lookup?id=${id}&country=${country}`);
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-    const meta = data.results?.[0] || null;
-    appCache.set(key, meta);
-    return meta;
-  } catch {
-    appCache.set(key, null);
-    return null;
-  }
+    const r = await fetch(`https://itunes.apple.com/lookup?id=${id}&country=${c}`);
+    if (!r.ok) throw 0;
+    const d = await r.json(); const m = d.results?.[0] || null; appCache.set(k, m); return m;
+  } catch { appCache.set(k, null); return null; }
 }
-
-/* ---------- App Grid Loader ---------- */
 async function loadApps() {
-  const grid = $('#appGrid');
-  if (!grid) return;
+  const g = $('#appGrid'); if (!g) return;
   try {
-    const res = await fetch('./data/apps.json', { cache: 'no-cache' });
-    if (!res.ok) throw new Error();
-    const list = await res.json();
-    if (!Array.isArray(list) || !list.length) {
-      grid.innerHTML = '<div class="placeholder-text">앱 정보가 아직 없습니다.</div>';
-      return;
-    }
-    grid.innerHTML = '';
-
-    const enriched = await Promise.all(list.map(async raw => {
-      const app = { ...raw };
-      const linkUrl = app.storeUrl || app.link || null;
-      const id = getAppStoreId(linkUrl);
-      if (id) {
-        const meta = await fetchAppMeta(id, app.country || 'kr');
-        if (meta) {
-          if (!app.name) app.name = meta.trackName;
-          if (!app.icon) app.icon = meta.artworkUrl512 || meta.artworkUrl100 || meta.artworkUrl60;
-          if (!app.tagline) {
-            const parts = [];
-            if (meta.primaryGenreName) parts.push(meta.primaryGenreName);
-            if (meta.formattedPrice && meta.formattedPrice !== 'Free') parts.push(meta.formattedPrice);
-            if (parts.length) app.tagline = parts.join(' · ');
-          }
+    const r = await fetch('./data/apps.json', { cache: 'no-cache' });
+    if (!r.ok) throw 0;
+    const list = await r.json();
+    if (!Array.isArray(list) || !list.length) { g.innerHTML = '<div class="muted-sm">앱 정보가 없습니다.</div>'; return; }
+    g.innerHTML = '';
+    const data = await Promise.all(list.map(async raw => {
+      const app = { ...raw }; const link = app.storeUrl || app.link || null;
+      const idm = (link || '').match(appIdRe);
+      if (idm) {
+        const m = await appMeta(idm[1], app.country || 'kr');
+        if (m) {
+          if (!app.name) app.name = m.trackName;
+          if (!app.icon) app.icon = m.artworkUrl512 || m.artworkUrl100;
+          if (!app.tagline && m.primaryGenreName) app.tagline = m.primaryGenreName;
         }
       }
-      return { app, linkUrl };
+      return { app, link };
     }));
-
-    enriched.forEach(({ app, linkUrl }) => {
-      const el = document.createElement(linkUrl ? 'a' : 'div');
-      el.className = 'app-card';
-      if (linkUrl) { el.href = linkUrl; el.target = '_blank'; el.rel = 'noreferrer'; }
-
-      const iconHtml = app.icon
-        ? `<img src="${app.icon}" alt="${app.name || 'app'}" loading="lazy">`
-        : '📱';
-
+    data.forEach(({ app, link }) => {
+      const el = document.createElement(link ? 'a' : 'div');
+      el.className = 'app-row';
+      if (link) { el.href = link; el.target = '_blank'; el.rel = 'noreferrer'; }
       el.innerHTML = `
-        <div class="app-icon">${iconHtml}</div>
-        <div class="app-meta">
+        <div class="app-ico">${app.icon ? `<img src="${app.icon}" alt="${app.name || ''}" loading="lazy">` : '📱'}</div>
+        <div class="app-txt">
           <h3>${app.name || '이름 미정'}</h3>
           ${app.tagline ? `<p>${app.tagline}</p>` : ''}
-        </div>
-      `;
-      grid.appendChild(el);
+        </div>`;
+      g.appendChild(el);
     });
-
-    scheduleReveal();
-  } catch {
-    grid.innerHTML = '<div class="placeholder-text">앱 데이터를 불러올 수 없습니다.</div>';
-  }
+  } catch { g.innerHTML = '<div class="muted-sm">앱 데이터를 불러올 수 없습니다.</div>'; }
 }
 loadApps();
 
-/* ---------- Gallery ---------- */
+/* --- Gallery --- */
 const G_EXT = /\.(png|jpe?g|webp|gif|svg)$/i;
-let galleryList = [];
-let galleryIndex = 0;
-
+let galList = [], galIdx = 0;
 async function fetchAssets() {
-  const user = root.dataset.user;
-  const repo = root.dataset.repo;
-  for (const branch of ['main', 'master']) {
+  const u = root.dataset.user, rp = root.dataset.repo;
+  for (const b of ['main', 'master']) {
     try {
-      const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/assets?ref=${branch}`, {
-        headers: { 'Accept': 'application/vnd.github+json' }
-      });
-      if (!res.ok) continue;
-      const arr = await res.json();
-      const files = arr.filter(x => x.type === 'file' && G_EXT.test(x.name)).map(x => `/assets/${x.name}`);
-      if (files.length) return files;
+      const r = await fetch(`https://api.github.com/repos/${u}/${rp}/contents/assets?ref=${b}`, { headers: { Accept: 'application/vnd.github+json' } });
+      if (!r.ok) continue;
+      const arr = await r.json();
+      const f = arr.filter(x => x.type === 'file' && G_EXT.test(x.name)).map(x => `/assets/${x.name}`);
+      if (f.length) return f;
     } catch {}
   }
-  return ['/assets/shot1.jpg', '/assets/shot2.jpg', '/assets/shot3.jpg'];
+  return [];
 }
-
 async function renderGallery() {
-  const grid = $('#galleryGrid');
-  if (!grid) return;
+  const g = $('#galleryGrid'); if (!g) return;
   try {
-    galleryList = await fetchAssets();
-    grid.innerHTML = '';
-    galleryList.forEach((src, i) => {
-      const div = document.createElement('div');
-      div.className = 'gallery-item';
-      div.dataset.index = i;
+    galList = await fetchAssets();
+    if (!galList.length) { g.innerHTML = '<div class="muted-sm">이미지가 없습니다.</div>'; return; }
+    g.innerHTML = '';
+    galList.forEach((src, i) => {
+      const d = document.createElement('div');
+      d.className = 'gal-item';
       const img = document.createElement('img');
-      img.loading = 'lazy';
-      img.alt = 'gallery';
-      img.src = src;
-      img.onerror = () => {
-        img.src = `data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="100%" height="100%" fill="#1c1c1e"/><text x="50%" y="50%" fill="#6b6b76" font-size="16" text-anchor="middle" dominant-baseline="middle">no image</text></svg>')}`;
-      };
-      div.appendChild(img);
-      grid.appendChild(div);
-      div.addEventListener('click', () => openLightbox(i));
+      img.loading = 'lazy'; img.alt = 'gallery'; img.src = src;
+      img.onerror = () => { img.src = `data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="100%" height="100%" fill="#191919"/><text x="50%" y="50%" fill="#555" font-size="14" text-anchor="middle" dominant-baseline="middle">×</text></svg>')}`; };
+      d.appendChild(img);
+      g.appendChild(d);
+      d.addEventListener('click', () => openLb(i));
     });
-    scheduleReveal();
-  } catch {
-    grid.innerHTML = '<div class="placeholder-text">갤러리를 불러올 수 없습니다.</div>';
-  }
+  } catch { g.innerHTML = '<div class="muted-sm">갤러리를 불러올 수 없습니다.</div>'; }
 }
 renderGallery();
 
-/* ---------- Lightbox ---------- */
-const lb = $('#lightbox');
-const lbImg = $('#lightImg');
-const lbCounter = $('#lbCounter');
-
-function updateCounter() {
-  if (lbCounter) lbCounter.textContent = `${galleryIndex + 1} / ${galleryList.length}`;
-}
-
-function openLightbox(i) {
-  galleryIndex = i;
-  lbImg.src = galleryList[galleryIndex];
-  lb.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-  updateCounter();
-}
-function closeLightbox() {
-  lb.setAttribute('aria-hidden', 'true');
-  lbImg.src = '';
-  document.body.style.overflow = '';
-}
-function prevImage() {
-  galleryIndex = (galleryIndex - 1 + galleryList.length) % galleryList.length;
-  lbImg.src = galleryList[galleryIndex];
-  updateCounter();
-}
-function nextImage() {
-  galleryIndex = (galleryIndex + 1) % galleryList.length;
-  lbImg.src = galleryList[galleryIndex];
-  updateCounter();
-}
-
-$('#closeImg')?.addEventListener('click', closeLightbox);
-$('#prevOverlay')?.addEventListener('click', prevImage);
-$('#nextOverlay')?.addEventListener('click', nextImage);
-
-$('.lightbox-backdrop')?.addEventListener('click', closeLightbox);
-lbImg?.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
-
+/* --- Lightbox --- */
+const lb = $('#lightbox'), lbImg = $('#lightImg'), lbCnt = $('#lbCounter');
+function cnt() { if (lbCnt) lbCnt.textContent = `${galIdx + 1} / ${galList.length}`; }
+function openLb(i) { galIdx = i; lbImg.src = galList[i]; lb.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; cnt(); }
+function closeLb() { lb.setAttribute('aria-hidden', 'true'); lbImg.src = ''; document.body.style.overflow = ''; }
+function prev() { galIdx = (galIdx - 1 + galList.length) % galList.length; lbImg.src = galList[galIdx]; cnt(); }
+function next() { galIdx = (galIdx + 1) % galList.length; lbImg.src = galList[galIdx]; cnt(); }
+$('#closeImg')?.addEventListener('click', closeLb);
+$('#prevOverlay')?.addEventListener('click', prev);
+$('#nextOverlay')?.addEventListener('click', next);
+$('.lb-bg')?.addEventListener('click', closeLb);
+lbImg?.addEventListener('click', e => { e.stopPropagation(); closeLb(); });
 document.addEventListener('keydown', e => {
   if (lb?.getAttribute('aria-hidden') === 'false') {
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') prevImage();
-    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowLeft') prev();
+    if (e.key === 'ArrowRight') next();
   }
 });
-
-// Touch swipe for lightbox
-let touchStartX = 0;
-lb?.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-lb?.addEventListener('touchend', e => {
-  const diff = e.changedTouches[0].screenX - touchStartX;
-  if (Math.abs(diff) > 50) {
-    if (diff > 0) prevImage(); else nextImage();
-  }
-}, { passive: true });
-
-/* ---------- Mobile Nav Active State ---------- */
-const sections = $$('.section[id], .hero[id]');
-const mobileLinks = $$('.mobile-nav-item');
-
-function updateActiveNav() {
-  let current = '';
-  sections.forEach(sec => {
-    const top = sec.offsetTop - 120;
-    if (window.scrollY >= top) current = sec.id;
-  });
-  mobileLinks.forEach(link => {
-    const href = link.getAttribute('href');
-    link.classList.toggle('active', href === `#${current}`);
-  });
-}
-window.addEventListener('scroll', updateActiveNav, { passive: true });
-
-/* ---------- Init Reveal ---------- */
-scheduleReveal();
-
-/* ---------- Service Worker ---------- */
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {});
-}
+let tx = 0;
+lb?.addEventListener('touchstart', e => { tx = e.changedTouches[0].screenX; }, { passive: true });
+lb?.addEventListener('touchend', e => { const d = e.changedTouches[0].screenX - tx; if (Math.abs(d) > 50) d > 0 ? prev() : next(); }, { passive: true });
