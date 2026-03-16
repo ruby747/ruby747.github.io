@@ -4,215 +4,144 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ruby747</title>
-  <meta name="description" content="ruby747 — 개인 포트폴리오">
-  <meta property="og:title" content="ruby747">
-  <meta property="og:description" content="ruby747 — 개인 포트폴리오">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="/assets/og.jpg">
-  <meta name="theme-color" content="#0a0a0b">
+  <meta name="description" content="ruby747 개인 포트폴리오">
+  <meta name="theme-color" content="#050505">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>💎</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
 
-  <!-- ============ HERO ============ -->
-  <section class="hero" id="top">
-    <div class="hero-bg" aria-hidden="true">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
-    </div>
-    <nav class="nav">
-      <a href="#top" class="nav-brand">ruby747</a>
-      <div class="nav-links">
-        <a href="#projects">작업물</a>
-        <a href="#videos">영상</a>
-        <a href="#gallery">갤러리</a>
-        <a href="#contact">링크</a>
-        <button id="themeBtn" class="nav-btn" title="테마 전환">
-          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-      </div>
-    </nav>
-    <div class="hero-content">
-      <div class="hero-badge">Seoul · <span id="clock">--:--:--</span></div>
-      <h1 class="hero-title">
-        안녕하세요,<br><span class="gradient-text">ruby747</span>입니다.
-      </h1>
-      <p class="hero-desc">웹 · 앱 · 영상 — 만드는 것을 좋아하는 개발자의 작업 공간입니다.</p>
-      <div class="hero-actions">
-        <a href="#projects" class="btn btn-primary">작업물 보기</a>
-        <a href="#contact" class="btn btn-ghost">연락하기</a>
-      </div>
-    </div>
-    <div class="scroll-hint" aria-hidden="true">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
-    </div>
-  </section>
+  <div class="page">
 
-  <!-- ============ PROJECTS ============ -->
-  <section class="section" id="projects">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-label">Projects</span>
-        <h2>웹페이지 작업물</h2>
-        <p>직접 만든 웹 프로젝트들입니다.</p>
+    <!-- ========== BENTO TOP ========== -->
+    <div class="bento">
+
+      <!-- 큰 인트로 카드 -->
+      <div class="cell cell-intro">
+        <div class="intro-top">
+          <span class="status-dot"></span>
+          <span class="status-text">Seoul <span id="clock">--:--</span></span>
+        </div>
+        <h1>ruby747</h1>
+        <p class="intro-sub">웹 · 앱 · 영상<br>만드는 걸 좋아합니다.</p>
       </div>
 
-      <div class="filter-bar">
-        <button class="chip active" data-tag="all">All</button>
-        <button class="chip" data-tag="game">Game</button>
-        <button class="chip" data-tag="note">Note</button>
-        <input id="projSearch" class="search-input" placeholder="검색…">
-      </div>
+      <!-- 테마 토글 -->
+      <button class="cell cell-square cell-theme" id="themeBtn" title="테마 전환">
+        <div class="theme-icon">
+          <svg class="ico-sun" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="ico-moon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+      </button>
 
-      <div class="project-grid" id="projGrid">
-        <a class="project-card" href="/suika" data-tags="game" target="_blank" rel="noreferrer">
-          <div class="project-icon">🎮</div>
-          <div class="project-info">
+      <!-- GitHub -->
+      <a class="cell cell-square cell-github" href="https://github.com/ruby747" target="_blank" rel="noreferrer" title="GitHub">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        <span class="cell-label">GitHub</span>
+      </a>
+
+      <!-- 이메일 -->
+      <a class="cell cell-mail" href="mailto:jun2002usa@gmail.com">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M22 7l-10 6L2 7"/></svg>
+        <span>jun2002usa@gmail.com</span>
+      </a>
+
+      <!-- 소셜 링크들 -->
+      <a class="cell cell-small" href="https://x.com/ellem1218" target="_blank" rel="noreferrer">
+        <span class="cell-emoji">𝕏</span>
+        <span class="cell-label">Twitter</span>
+      </a>
+      <a class="cell cell-small" href="https://twitch.tv/ecoffee" target="_blank" rel="noreferrer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
+        <span class="cell-label">Twitch</span>
+      </a>
+      <a class="cell cell-small" href="https://www.youtube.com/@%EC%BB%A4%ED%94%BC%EC%BD%A9" target="_blank" rel="noreferrer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        <span class="cell-label">YouTube</span>
+      </a>
+
+    </div>
+
+    <!-- ========== PROJECTS ========== -->
+    <section class="block" id="projects">
+      <div class="block-head">
+        <h2>Projects</h2>
+        <div class="filter-row">
+          <button class="tag active" data-tag="all">전체</button>
+          <button class="tag" data-tag="game">게임</button>
+          <button class="tag" data-tag="note">노트</button>
+          <input id="projSearch" class="tag tag-search" placeholder="검색">
+        </div>
+      </div>
+      <div class="proj-grid" id="projGrid">
+        <a class="proj" href="/suika" data-tags="game" target="_blank" rel="noreferrer">
+          <div class="proj-num">01</div>
+          <div class="proj-body">
             <h3>Suika Clone</h3>
             <p>브라우저 수박게임</p>
           </div>
-          <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          <div class="proj-arrow">↗</div>
         </a>
-        <a class="project-card" href="https://pr1-app.ruby747.com/" data-tags="note" target="_blank" rel="noreferrer">
-          <div class="project-icon">📑</div>
-          <div class="project-info">
+        <a class="proj" href="https://pr1-app.ruby747.com/" data-tags="note" target="_blank" rel="noreferrer">
+          <div class="proj-num">02</div>
+          <div class="proj-body">
             <h3>Bookmarks</h3>
             <p>스트리밍/메모 정리</p>
           </div>
-          <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+          <div class="proj-arrow">↗</div>
         </a>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ============ APPS ============ -->
-  <section class="section section-alt" id="apps">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-label">Apps</span>
-        <h2>앱 작업물</h2>
-        <p>직접 제작한 앱 소개와 앱스토어 링크입니다.</p>
+    <!-- ========== APPS ========== -->
+    <section class="block" id="apps">
+      <div class="block-head">
+        <h2>Apps</h2>
       </div>
-      <div class="app-grid" id="appGrid" aria-live="polite">
-        <div class="placeholder-text">앱 정보를 불러오는 중…</div>
+      <div class="app-list" id="appGrid" aria-live="polite">
+        <div class="muted-sm">불러오는 중…</div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ============ VIDEOS ============ -->
-  <section class="section" id="videos">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-label">Videos</span>
-        <h2>영상편집 작업물</h2>
-        <p>영상 편집 작업물을 모아둔 공간입니다.</p>
+    <!-- ========== VIDEOS ========== -->
+    <section class="block" id="videos">
+      <div class="block-head">
+        <h2>Videos</h2>
       </div>
-      <div class="video-grid" id="videoGrid" aria-live="polite">
-        <div class="placeholder-text">영상 리스트를 불러오는 중…</div>
+      <div class="vid-grid" id="videoGrid" aria-live="polite">
+        <div class="muted-sm">불러오는 중…</div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ============ GALLERY ============ -->
-  <section class="section section-alt" id="gallery">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-label">Gallery</span>
-        <h2>갤러리</h2>
+    <!-- ========== GALLERY ========== -->
+    <section class="block" id="gallery">
+      <div class="block-head">
+        <h2>Gallery</h2>
       </div>
-      <div class="gallery-grid" id="galleryGrid" aria-live="polite"></div>
-    </div>
-  </section>
+      <div class="gal-grid" id="galleryGrid" aria-live="polite"></div>
+    </section>
 
-  <!-- ============ CONTACT / LINKS ============ -->
-  <section class="section" id="contact">
-    <div class="container">
-      <div class="section-header center">
-        <span class="section-label">Links</span>
-        <h2>연락 & 소셜</h2>
-        <p>아래 링크를 통해 연락하실 수 있습니다.</p>
-      </div>
-      <div class="link-grid">
-        <a href="mailto:jun2002usa@gmail.com" class="link-card">
-          <span class="link-icon">✉️</span>
-          <span class="link-name">Email</span>
-          <span class="link-handle">jun2002usa@gmail.com</span>
-        </a>
-        <a href="https://github.com/ruby747" target="_blank" rel="noreferrer" class="link-card">
-          <span class="link-icon">🐙</span>
-          <span class="link-name">GitHub</span>
-          <span class="link-handle">ruby747</span>
-        </a>
-        <a href="https://x.com/ellem1218" target="_blank" rel="noreferrer" class="link-card">
-          <span class="link-icon">𝕏</span>
-          <span class="link-name">X (Twitter)</span>
-          <span class="link-handle">@ellem1218</span>
-        </a>
-        <a href="https://twitch.tv/ecoffee" target="_blank" rel="noreferrer" class="link-card">
-          <span class="link-icon">🎮</span>
-          <span class="link-name">Twitch</span>
-          <span class="link-handle">ecoffee</span>
-        </a>
-        <a href="https://www.youtube.com/@%EC%BB%A4%ED%94%BC%EC%BD%A9" target="_blank" rel="noreferrer" class="link-card">
-          <span class="link-icon">▶️</span>
-          <span class="link-name">YouTube</span>
-          <span class="link-handle">커피콩</span>
-        </a>
-      </div>
-    </div>
-  </section>
+    <!-- ========== FOOTER ========== -->
+    <footer class="ft">
+      <span>© <span id="year"></span> ruby747</span>
+      <span>GitHub Pages · Cloudflare</span>
+    </footer>
 
-  <!-- ============ FOOTER ============ -->
-  <footer class="footer">
-    <div class="container footer-inner">
-      <p>© <span id="year"></span> ruby747</p>
-      <p>GitHub Pages · Cloudflare</p>
-    </div>
-  </footer>
-
-  <!-- ============ LIGHTBOX ============ -->
-  <div class="lightbox" id="lightbox" aria-hidden="true">
-    <div class="lightbox-backdrop"></div>
-    <img id="lightImg" alt="">
-    <button class="lb-arrow lb-prev" id="prevOverlay" aria-label="이전">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
-    <button class="lb-arrow lb-next" id="nextOverlay" aria-label="다음">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-    </button>
-    <button class="lb-close" id="closeImg" aria-label="닫기">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-    </button>
-    <div class="lb-counter" id="lbCounter"></div>
   </div>
 
-  <!-- ============ MOBILE NAV ============ -->
-  <nav class="mobile-nav">
-    <a href="#top" class="mobile-nav-item">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-      <span>홈</span>
-    </a>
-    <a href="#projects" class="mobile-nav-item">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      <span>작업물</span>
-    </a>
-    <a href="#gallery" class="mobile-nav-item">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-      <span>갤러리</span>
-    </a>
-    <a href="#contact" class="mobile-nav-item">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
-      <span>링크</span>
-    </a>
-  </nav>
+  <!-- ========== LIGHTBOX ========== -->
+  <div class="lb" id="lightbox" aria-hidden="true">
+    <div class="lb-bg"></div>
+    <img id="lightImg" alt="">
+    <button class="lb-btn lb-prev" id="prevOverlay" aria-label="이전"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="lb-btn lb-next" id="nextOverlay" aria-label="다음"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+    <button class="lb-btn lb-x" id="closeImg" aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="lb-count" id="lbCounter"></div>
+  </div>
 
-  <noscript>자바스크립트를 켜면 시계/갤러리 등 기능이 활성화됩니다.</noscript>
   <script src="./js/main.js"></script>
 </body>
 </html>
